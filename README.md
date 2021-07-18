@@ -1,14 +1,15 @@
-# neovim-lua-plugin-boilerplate
+# nvim-comment-frame (WIP)
 
-I forget the structure of a `neovim` plugin every single time. So I created the
-boilerplate to make it easier to get started writing `neovim` plugin.
+Plugin inspired by [CommentFrame.vim](https://github.com/cometsong/CommentFrame.vim)
+Unlike `CommentFrame.vim` this detects the language using Treesitter.
+Basically when you give it some text it creates a comment frame like below.
 
-[YouTube video](https://youtu.be/6ch28A_YICQ)
+```javascript
+//----------------------------------------------------------------------------//
+//                                Hello World                                 //
+//----------------------------------------------------------------------------//
+```
 
 ## How to use
 
-* clone the project `git clone https://github.com/s1n7ax/neovim-lua-plugin-boilderplate`
-* go to the project folder `cd neovim-lua-plugin-boilderplate`
-* start editing `nvim --cmd "set rtp+=."`
-* reference the dev configurations `:luafile dev/init.lua`
-* run the greetings.greet() function using `,w` keybind
+(will be updated soon)
