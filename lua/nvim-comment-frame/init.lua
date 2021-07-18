@@ -51,6 +51,7 @@ end
 
 -- Detects the language and writes comment to the buffer
 function CommentFrame.auto_comment()
+	-- get the language of the current buffer from treesitter
 	local curr_lang = get_curr_lang()
 
 	-- @TODO when treesitter has no parser for the filetype it fails at
@@ -60,20 +61,25 @@ function CommentFrame.auto_comment()
 		err('Treesitter cannot figure out the language')
 	end
 
+	-- get the comment frame configuration for current language
 	local lang_config = get_lang_config(curr_lang)
 
 	if lang_config == nil then
 		err("Could not find a configuration for language '" .. curr_lang .. "'")
 	end
 
+	-- get content from the user
 	local text = fn.input('What is the comment? ')
 
+	-- generate the comment
 	local comment = Comment
 		:new(lang_config)
 		:get_comment(text)
 
+	-- retrieve current line number
 	local line = get_curr_cursor()[1]
 
+	-- add the lines to the buffer
 	api.nvim_buf_set_lines(
 		api.nvim_get_current_buf(),
 		line,
