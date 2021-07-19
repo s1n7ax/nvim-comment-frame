@@ -1,3 +1,5 @@
+require('nvim-comment-frame.util')
+
 -- plugin name will be used to reload the loaded modules
 local package_name = 'nvim-comment-frame'
 

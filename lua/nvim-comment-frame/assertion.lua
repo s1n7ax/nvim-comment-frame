@@ -1,3 +1,11 @@
+local function is_true(value, message)
+	message = message or "value is not true"
+
+	if value ~= true then
+		error(message)
+	end
+end
+
 local String = {}
 
 function String.is_str(value, message)
@@ -37,6 +45,7 @@ function Number.is_number(value, message)
 end
 
 return {
+	is_true = is_true,
 	String = String,
 	Number = Number
 }
