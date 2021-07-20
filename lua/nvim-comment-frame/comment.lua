@@ -20,6 +20,7 @@ function Comment:new(opt)
 	return self
 end
 
+-- validates all the properties
 function Comment:validate_config(opt)
 	-- if the end_str is not passed, start_str will be used
 	opt.end_str = opt.end_str or opt.start_str
@@ -29,7 +30,7 @@ function Comment:validate_config(opt)
 	Assert.String.is_str(opt.fill_char, "fill_char should be a single character string")
 
 	Assert.String.is_not_empty(opt.start_str, "start_str shouldn't be empty")
-	Assert.String.is_not_empty(opt.end_str, "end_str should't be empty")
+	Assert.String.is_not_empty(opt.end_str, "end_str shouldn't be empty")
 
 	Assert.String.is_char(opt.fill_char, "fill_char should be a single character")
 
@@ -44,51 +45,55 @@ function Comment:validate_config(opt)
 	)
 end
 
+-- Returns the lines of comment frame
 function Comment:get_comment(text)
 	Assert.String.is_not_empty(text, "comment text shouldn't be empty")
 
-	local text_len = string.len(text)
-	local padding_len = self.box_width - string.len(self.start_str .. self.end_str)
-
-	local text_padding_len = padding_len - text_len
-	local left_text_padding_len = math.floor(text_padding_len / 2)
-	local right_text_padding_len = text_padding_len - left_text_padding_len
-
-	local comment_line_format = self.COMMENT_LINE_FORMAT:format(padding_len)
-	local text_line_format = self.TEXT_LINE_FORMAT:format(
-		left_text_padding_len,
-		right_text_padding_len
-	)
-
 	local lines = {}
 
-	local comment_line = comment_line_format:format(
-		self.start_str,
-		'',
-		self.end_str
-	):gsub(' ', self.fill_char)
-
-	table.insert(lines, comment_line)
+	table.insert(lines, self:get_border_line())
 
 	for _, line in ipairs(Util.String.wrap_lines(text, self.word_wrap_len)) do
-		local text_line = text_line_format:format(
+		table.insert(lines, self:get_text_line(line))
+	end
+
+	table.insert(lines, self:get_border_line())
+
+	return lines
+end
+
+-- Returns comment line for a given text
+function Comment:get_text_line(text)
+	local padding = self.box_width - (
+		self.start_str:len() + self.end_str:len() + text:len()
+	)
+
+	local left_padding = math.floor(padding / 2)
+	local right_padding = padding - left_padding
+
+	return self.TEXT_LINE_FORMAT
+		:format(left_padding, right_padding)
+		:format(
 			self.start_str,
 			'',
-			line,
+			text,
 			'',
 			self.end_str
 		)
+end
 
-		table.insert(lines, text_line)
-	end
+-- Returns border of the comment frame
+function Comment:get_border_line()
+	local padding_len = self.box_width - (self.start_str:len() + self.end_str:len())
+	local comment, _ =  self.COMMENT_LINE_FORMAT
+		:format(padding_len)
+		:format(
+			self.start_str,
+			'',
+			self.end_str
+		):gsub(' ', self.fill_char)
 
-	table.insert(lines, comment_line)
-
-	for _, i in ipairs(lines) do
-		print(i)
-	end
-
-	return lines
+	return comment
 end
 
 return Comment
