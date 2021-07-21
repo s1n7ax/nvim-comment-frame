@@ -1,5 +1,9 @@
 local config = {
+	start_str = '#',
+	end_str = '#',
+	fill_char = '-',
 	box_width = 80,
+	word_wrap_len = 50,
 
 	languages = {
 
