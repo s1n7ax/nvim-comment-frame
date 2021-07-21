@@ -34,7 +34,16 @@ end
 
 -- Returns the language configuration for current treesitter language
 local function get_lang_config(lang)
-	return config['languages'][lang]
+	local lc = config['languages'][lang]
+
+	-- set language fallback configuration
+	lc.start_str = lc.start_str or config.start_str
+	lc.end_str = lc.end_str or config.end_str
+	lc.fill_char = lc.fill_char or config.fill_char
+	lc.box_width = lc.box_width or config.box_width
+	lc.word_wrap_len = lc.word_wrap_len or config.word_wrap_len
+
+	return lc
 end
 
 -- Merge content of two table and returns a new table
