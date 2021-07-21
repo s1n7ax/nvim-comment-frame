@@ -1,5 +1,6 @@
 local config = require('nvim-comment-frame.config')
 local Comment = require('nvim-comment-frame.comment')
+local Util = require('nvim-comment-frame.util')
 
 local v = vim
 local api = vim.api
@@ -70,6 +71,10 @@ function CommentFrame.auto_comment()
 
 	-- get content from the user
 	local text = fn.input('What is the comment? ')
+
+	if Util.String.is_empty(text) then
+		return
+	end
 
 	-- generate the comment
 	local comment = Comment

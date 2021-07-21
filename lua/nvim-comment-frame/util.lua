@@ -77,6 +77,14 @@ function String.wrap_lines(str, wrap_len)
 	return lines
 end
 
+function String.is_empty(str)
+	if str:len() < 1 then
+		return true
+	end
+
+	return false
+end
+
  return {
 	 String = String
  }
