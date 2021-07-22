@@ -51,7 +51,7 @@ the comment character based on the language.
 
 ```lua
 use { 
-	's1n7ax/nvim-terminal',
+	's1n7ax/nvim-comment-frame',
 	config = function()
 		require('nvim-comment-frame').setup()
 	end
