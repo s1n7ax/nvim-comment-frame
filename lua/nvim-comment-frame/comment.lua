@@ -12,7 +12,7 @@ function Comment:new(opt)
 	self.end_str = opt.end_str
 	self.fill_char = opt.fill_char
 	self.box_width = opt.box_width
-	self.word_wrap_len = opt.word_wrap_len
+	self.line_wrap_len = opt.line_wrap_len
 
 	self.COMMENT_LINE_FORMAT = '%%s%%%is%%s'
 	self.TEXT_LINE_FORMAT = '%%s%%%is%%s%%%is%%s'
@@ -35,13 +35,13 @@ function Comment:validate_config(opt)
 	Assert.String.is_char(opt.fill_char, "fill_char should be a single character")
 
 	Assert.Number.is_number(opt.box_width, "box_width should be a number")
-	Assert.Number.is_number(opt.word_wrap_len, "word_wrap should be a number")
+	Assert.Number.is_number(opt.line_wrap_len, "line_wrap_len should be a number")
 
 	local padding = opt.box_width - (opt.start_str:len() + opt.end_str:len())
 
 	Assert.is_true(
-		opt.word_wrap_len <= padding,
-		"word_wrap should be less than or equal to " .. padding
+		opt.line_wrap_len <= padding,
+		"line_wrap_len should be less than or equal to " .. padding
 	)
 end
 
@@ -53,7 +53,7 @@ function Comment:get_comment(text)
 
 	table.insert(lines, self:get_border_line())
 
-	for _, line in ipairs(Util.String.wrap_lines(text, self.word_wrap_len)) do
+	for _, line in ipairs(Util.String.wrap_lines(text, self.line_wrap_len)) do
 		table.insert(lines, self:get_text_line(line))
 	end
 

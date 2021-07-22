@@ -3,7 +3,7 @@ local config = {
 	end_str = '#',
 	fill_char = '-',
 	box_width = 70,
-	word_wrap_len = 50,
+	line_wrap_len = 50,
 
 	languages = {
 		bash = {

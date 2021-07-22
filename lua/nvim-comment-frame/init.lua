@@ -18,7 +18,7 @@ local function get_lang_config(lang)
 	lc.end_str = lc.end_str or config.end_str
 	lc.fill_char = lc.fill_char or config.fill_char
 	lc.box_width = lc.box_width or config.box_width
-	lc.word_wrap_len = lc.word_wrap_len or config.word_wrap_len
+	lc.line_wrap_len = lc.line_wrap_len or config.line_wrap_len
 
 	return lc
 end
