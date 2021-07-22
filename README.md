@@ -3,9 +3,9 @@
 Basically when you give it some text it creates a comment frame like below.
 
 ```javascript
-//--------------------------------------------------------//
-//                      Hello World                       //
-//--------------------------------------------------------//
+//------------------------------------------------------------------//
+//                        nvim-comment-frame                        //
+//------------------------------------------------------------------//
 ```
 
 ## Features
@@ -18,17 +18,17 @@ the comment character based on the language.
 **Bash**
 
 ```bash
-#----------------------------------------------------------#
-#                       Hello World                        #
-#----------------------------------------------------------#
+#--------------------------------------------------------------------#
+#                            Hello World                             #
+#--------------------------------------------------------------------#
 ```
 
 **Lua**
 
 ```lua
-------------------------------------------------------------
---                      Hello World                       --
-------------------------------------------------------------
+----------------------------------------------------------------------
+--                           Hello World                            --
+----------------------------------------------------------------------
 ```
 
 ### Wrap lines
@@ -36,14 +36,13 @@ the comment character based on the language.
 **CSS**
 
 ```css
-/*--------------------------------------------------------*/
-/*        Cascading Style Sheets is a style sheet         */
-/*            language used for describing the            */
-/*        presentation of a document written in a         */
-/*         markup language such as HTML. CSS is a         */
-/*        cornerstone technology of the World Wide        */
-/*          Web, alongside HTML and JavaScript.           */
-/*--------------------------------------------------------*/
+/*------------------------------------------------------------------*/
+/*         Cascading Style Sheets is a style sheet language         */
+/*        used for describing the presentation of a document        */
+/*        written in a markup language such as HTML. CSS is         */
+/*         a cornerstone technology of the World Wide Web,          */
+/*                  alongside HTML and JavaScript.                  */
+/*------------------------------------------------------------------*/
 ```
 
 ## Install
@@ -51,7 +50,12 @@ the comment character based on the language.
 **Packer**
 
 ```lua
-use { 's1n7ax/nvim-terminal' }
+use { 
+	's1n7ax/nvim-terminal',
+	config = function()
+		require('nvim-comment-frame').setup()
+	end
+}
 ```
 
 ## Configuring
