@@ -1,3 +1,6 @@
+local api = vim.api
+local ts = vim.treesitter
+
 local String = {}
 
 -- Returns an array of strings splitted by given pattern
@@ -85,6 +88,54 @@ function String.is_empty(str)
 	return false
 end
 
+local Logger = {}
+
+-- Prints an error message
+function Logger.error(message)
+	api.nvim_err_write("[nvim-comment-frame]:" .. message)
+end
+
+local Nvim = {}
+
+-- Returns the cursor line number
+function Nvim.get_curr_cursor()
+	local win = api.nvim_get_current_win()
+	local cursor = api.nvim_win_get_cursor(win)
+
+	return cursor
+end
+
+local Lua = {}
+
+-- Merge content of two table and returns a new table
+function Lua.merge_tables(t1, t2)
+    for k, v in pairs(t2) do
+        if (type(v) == "table") and (type(t1[k] or false) == "table") then
+            Lua.merge_tables(t1[k], t2[k])
+        else
+            t1[k] = v
+        end
+    end
+
+    return t1
+end
+
+local Treesitter = {}
+
+-- Returns the language for current line using treesitter
+function Treesitter.get_curr_lang()
+	local parser = ts.get_parser(api.nvim_get_current_buf())
+	local line = Nvim.get_curr_cursor()[1]
+
+	return parser:language_for_range({
+		line, 0, line, 0
+	}):lang()
+end
+
  return {
-	 String = String
+	 String = String,
+	 Logger =Logger,
+	 Nvim = Nvim,
+	 Lua = Lua,
+	 Treesitter = Treesitter,
  }

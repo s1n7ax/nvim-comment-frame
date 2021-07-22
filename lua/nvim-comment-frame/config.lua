@@ -2,11 +2,10 @@ local config = {
 	start_str = '#',
 	end_str = '#',
 	fill_char = '-',
-	box_width = 80,
-	word_wrap_len = 50,
+	box_width = 60,
+	word_wrap_len = 40,
 
 	languages = {
-
 		bash = {
 			start_str = '#',
 			end_str = '#',

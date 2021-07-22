@@ -1,5 +1,3 @@
-require('nvim-comment-frame.util')
-
 -- plugin name will be used to reload the loaded modules
 local package_name = 'nvim-comment-frame'
 
@@ -21,7 +19,20 @@ end
 
 -- executes the run method in the package
 local run_action = function ()
-	require(package_name).setup()
+	require(package_name).setup({
+		box_width = 60,
+		word_wrap_len = 40,
+
+		languages = {
+			lua = {
+				start_str = '--',
+				end_str = '--',
+				fill_char = '*',
+			}
+		}
+	})
+
+	require(package_name).add_comment()
 end
 
 -- unload and run the function from the package
