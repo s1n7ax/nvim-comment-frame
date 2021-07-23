@@ -2,7 +2,7 @@
 
 Basically when you give it some text it creates a comment frame like below.
 
-```python
+```
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~                   nvim-comment-frame                   ~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,15 +17,20 @@ the comment string based on the language.
 
 **Pythn**
 
-```python
-#----------------------------------------------------------#
-#           Python is an interpreted high-level            #
-#           general-purpose programming language           #
-#----------------------------------------------------------#
-with open("file.txt") as file_in:
-    lines = []
-    for line in file_in:
-        lines.append(line)
+```javascript
+//--------------------------------------------------------//
+//       JavaScript, often abbreviated as JS, is a        //
+//       programming language that conforms to the        //
+//                ECMAScript specification                //
+//--------------------------------------------------------//
+var fs = require('fs');
+var path = require('path');
+
+var BUFFER = bufferFile('../public/mydata.png');
+
+function bufferFile(relPath) {
+return fs.readFileSync(path.join(__dirname, relPath));
+}
 ```
 
 **Bash**
