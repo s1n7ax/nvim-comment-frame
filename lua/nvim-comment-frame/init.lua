@@ -17,7 +17,7 @@ local function get_lang_config(lang, line)
 	lc.start_str = lc.start_str or config.start_str
 	lc.end_str = lc.end_str or config.end_str
 	lc.fill_char = lc.fill_char or config.fill_char
-	lc.box_width = lc.box_width or config.box_width
+	lc.frame_width = lc.frame_width or config.frame_width
 	lc.line_wrap_len = lc.line_wrap_len or config.line_wrap_len
 	lc.add_comment_above = lc.add_comment_above or config.add_comment_above
 	lc.indent_str = ''

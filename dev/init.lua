@@ -20,8 +20,8 @@ end
 -- executes the run method in the package
 local run_action = function ()
 	require(package_name).setup({
-		box_width = 60,
-		word_wrap_len = 40,
+		frame_width = 60,
+		line_wrap_len = 40,
 
 		languages = {
 			lua = {

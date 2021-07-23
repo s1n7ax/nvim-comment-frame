@@ -11,7 +11,7 @@ function Comment:new(opt)
 	self.start_str = opt.start_str
 	self.end_str = opt.end_str
 	self.fill_char = opt.fill_char
-	self.box_width = opt.box_width
+	self.frame_width = opt.frame_width
 	self.line_wrap_len = opt.line_wrap_len
 	self.indent_str = opt.indent_str
 
@@ -36,10 +36,10 @@ function Comment:validate_config(opt)
 
 	Assert.String.is_char(opt.fill_char, "fill_char should be a single character")
 
-	Assert.Number.is_number(opt.box_width, "box_width should be a number")
+	Assert.Number.is_number(opt.frame_width, "frame_width should be a number")
 	Assert.Number.is_number(opt.line_wrap_len, "line_wrap_len should be a number")
 
-	local padding = opt.box_width - (opt.start_str:len() + opt.end_str:len())
+	local padding = opt.frame_width - (opt.start_str:len() + opt.end_str:len())
 
 	Assert.is_true(
 		opt.line_wrap_len <= padding,
@@ -66,7 +66,7 @@ end
 
 -- Returns comment line for a given text
 function Comment:get_text_line(text)
-	local padding = self.box_width - (
+	local padding = self.frame_width - (
 		self.start_str:len() + self.end_str:len() + text:len()
 	)
 
@@ -87,7 +87,7 @@ end
 
 -- Returns border of the comment frame
 function Comment:get_border_line()
-	local padding_len = self.box_width - (self.start_str:len() + self.end_str:len())
+	local padding_len = self.frame_width - (self.start_str:len() + self.end_str:len())
 	local comment, _ =  self.COMMENT_LINE_FORMAT
 		:format(padding_len)
 		:format(
