@@ -18,8 +18,8 @@ local config = {
 			fill_char = '-',
 		},
 		c = {
-			start_str = '--',
-			end_str = '--',
+			start_str = '//',
+			end_str = '//',
 			fill_char = '-',
 		},
 		c_sharp = {
