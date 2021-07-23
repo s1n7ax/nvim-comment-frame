@@ -85,7 +85,7 @@ use `treesitter` to get the indentation of the current line and indent the comme
   indentation
 * You can turn off this globally or just for a language by `auto_indent = false`
 
-```
+```c
 detachstack(Client *c)
 {
 	Client **tc, *t;
