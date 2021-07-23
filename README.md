@@ -49,6 +49,8 @@ the comment character based on the language.
 
 * `auto_indent` is set to `true` by default. When this option is on, plugin will
 use `treesitter` to get the indentation of the current line and indent the comment
+* Based on the `expandtab` option, plugin will use `tab` or `space` for
+  indentation
 * You can turn off this globally or just for a language by `auto_indent = false`
 
 ```
@@ -73,14 +75,32 @@ detachstack(Client *c)
 
 **Packer**
 
+* Add the plugin to the configuration
+
 ```lua
 use { 
 	's1n7ax/nvim-comment-frame',
+	requires = {
+		{ 'nvim-treesitter' }
+	}
 	config = function()
 		require('nvim-comment-frame').setup()
 	end
 }
 ```
+
+* Install the plugin
+
+```
+:PackerInstall
+```
+
+* Compile the packages
+
+```
+:PackerCompile
+```
+
 
 ## Configuring
 
@@ -93,11 +113,23 @@ Following are the general configurations with default values.
 
 ```lua
 require('nvim-comment-frame').setup({
-	disable_default_keymap = false,
-	keymap = '<leader>fc'
-	box_width = 60,
-	word_wrap_len = 40,
 
+	-- if true, <leader>cf keymap will be disabled
+	disable_default_keymap = false,
+
+	-- adds custom keymap
+	keymap = '<leader>cc'
+
+	-- width of the comment frame
+	box_width = 70,
+
+	-- wrap the line after 'n' characters
+	line_wrap_len = 50,
+
+	-- automatically indent the comment frame based on the line
+	auto_indent = true
+
+	-- configurations for individual language goes here
 	languages = {
 	}
 })
@@ -108,10 +140,27 @@ require('nvim-comment-frame').setup({
 ```lua
 require('nvim-comment-frame').setup({
 	languages = {
+		-- configuration for Lua programming language
+		-- @NOTE global configuration will be overridden by language level
+		configuration if provided
 		lua = {
+			-- start the comment with this string
 			start_str = '--[[',
+
+			-- end the comment line with this string
 			end_str = ']]--',
+
+			-- fill the comment frame border with this character
 			fill_char = '*',
+
+			-- width of the comment frame
+			box_width = 70,
+
+			-- wrap the line after 'n' characters
+			line_wrap_len = 50,
+
+			-- automatically indent the comment frame based on the line
+			auto_indent = true
 		},
 	}
 })
