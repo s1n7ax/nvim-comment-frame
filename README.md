@@ -164,6 +164,9 @@ require('nvim-comment-frame').setup({
 	-- automatically indent the comment frame based on the line
 	auto_indent = true
 
+	-- add comment above the current line
+	add_comment_above = true
+
 	-- configurations for individual language goes here
 	languages = {
 	}
@@ -196,6 +199,9 @@ require('nvim-comment-frame').setup({
 
 			-- automatically indent the comment frame based on the line
 			auto_indent = true
+
+			-- add comment above the current line
+			add_comment_above = true
 		},
 	}
 })

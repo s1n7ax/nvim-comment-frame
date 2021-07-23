@@ -19,7 +19,11 @@ local function get_lang_config(lang, line)
 	lc.fill_char = lc.fill_char or config.fill_char
 	lc.box_width = lc.box_width or config.box_width
 	lc.line_wrap_len = lc.line_wrap_len or config.line_wrap_len
+	lc.add_comment_above = lc.add_comment_above or config.add_comment_above
 	lc.indent_str = ''
+
+	-- add commet above
+	
 
 	-- indentation configuration
 	local should_indent = lc.auto_indent
@@ -88,12 +92,16 @@ local function add_comment()
 		:new(lang_config)
 		:get_comment(text)
 
+	local comment_line = line
+	if lang_config.add_comment_above then
+		comment_line = line - 1
+	end
 
 	-- add the lines to the buffer
 	api.nvim_buf_set_lines(
 		api.nvim_get_current_buf(),
-		line,
-		line,
+		comment_line,
+		comment_line,
 		false,
 		comment
 	)
