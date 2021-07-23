@@ -22,9 +22,6 @@ local function get_lang_config(lang, line)
 	lc.add_comment_above = lc.add_comment_above or config.add_comment_above
 	lc.indent_str = ''
 
-	-- add commet above
-	
-
 	-- indentation configuration
 	local should_indent = lc.auto_indent
 
