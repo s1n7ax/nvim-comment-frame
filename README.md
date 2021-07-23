@@ -156,7 +156,7 @@ require('nvim-comment-frame').setup({
 	keymap = '<leader>cc'
 
 	-- width of the comment frame
-	box_width = 70,
+	frame_width = 70,
 
 	-- wrap the line after 'n' characters
 	line_wrap_len = 50,
@@ -192,7 +192,7 @@ require('nvim-comment-frame').setup({
 			fill_char = '*',
 
 			-- width of the comment frame
-			box_width = 70,
+			frame_width = 70,
 
 			-- wrap the line after 'n' characters
 			line_wrap_len = 50,
