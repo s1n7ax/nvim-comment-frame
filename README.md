@@ -15,7 +15,7 @@ Basically when you give it some text it creates a comment frame like below.
 * Detects the current language using `treesitter` and changes
 the comment string based on the language.
 
-**Pythn**
+**Javascript**
 
 ```javascript
 //--------------------------------------------------------//
