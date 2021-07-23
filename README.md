@@ -45,6 +45,30 @@ the comment character based on the language.
 /*------------------------------------------------------------------*/
 ```
 
+### Auto indent
+
+* `auto_indent` is set to `true` by default. When this option is on, plugin will
+use `treesitter` to get the indentation of the current line and indent the comment
+* You can turn off this globally or just for a language by `auto_indent = false`
+
+```
+detachstack(Client *c)
+{
+	Client **tc, *t;
+
+	for (tc = &c->mon->stack; *tc && *tc != c; tc = &(*tc)->snext);
+	*tc = c->snext;
+	------------------------------------------------------------
+	--                      Hello World                       --
+	------------------------------------------------------------
+
+	if (c == c->mon->sel) {
+		for (t = c->mon->stack; t && !ISVISIBLE(t); t = t->snext);
+		c->mon->sel = t;
+	}
+}
+```
+
 ## Install
 
 **Packer**

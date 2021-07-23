@@ -1,5 +1,6 @@
 local config = require('nvim-comment-frame.config')
 local Comment = require('nvim-comment-frame.comment')
+local Indent = require('nvim-treesitter.indent')
 local Util = require('nvim-comment-frame.util')
 local Treesitter = Util.Treesitter
 local Logger = Util.Logger
@@ -10,7 +11,7 @@ local fn = vim.fn
 local api = vim.api
 
 -- Returns the language configuration for current treesitter language
-local function get_lang_config(lang)
+local function get_lang_config(lang, line)
 	local lc = config['languages'][lang]
 
 	-- set language fallback configuration
@@ -19,12 +20,48 @@ local function get_lang_config(lang)
 	lc.fill_char = lc.fill_char or config.fill_char
 	lc.box_width = lc.box_width or config.box_width
 	lc.line_wrap_len = lc.line_wrap_len or config.line_wrap_len
+	lc.indent_str = ''
+
+	-- indentation configuration
+	local should_indent = lc.auto_indent
+
+	if should_indent == nil then
+		should_indent = config.auto_indent
+	end
+
+	local expandtab = vim.o.expandtab
+	local shiftwidth = fn.shiftwidth()
+	local spaces_pattern = '%%%is'
+
+	if should_indent then
+		if expandtab then
+			lc.indent_str = spaces_pattern
+				:format(shiftwidth)
+				:format(' ')
+		else
+			local indent_size = Indent.get_indent(line)
+			print(indent_size)
+
+			if indent_size > 0 then
+				local tabs = indent_size / shiftwidth
+				lc.indent_str = spaces_pattern
+					:format(tabs)
+					:format(' ')
+					:gsub(' ', '\t')
+			end
+		end
+	end
+
+	print(vim.inspect(lc))
 
 	return lc
 end
 
 -- Detects the language and writes comment to the buffer
 local function add_comment()
+	-- retrieve current line number
+	local line = Nvim.get_curr_cursor()[1]
+
 	-- get the language of the current buffer from treesitter
 	local curr_lang = Treesitter.get_curr_lang()
 
@@ -36,7 +73,7 @@ local function add_comment()
 	end
 
 	-- get the comment frame configuration for current language
-	local lang_config = get_lang_config(curr_lang)
+	local lang_config = get_lang_config(curr_lang, line)
 
 	if lang_config == nil then
 		Logger.error("Could not find a configuration for language '" .. curr_lang .. "'")
@@ -54,8 +91,6 @@ local function add_comment()
 		:new(lang_config)
 		:get_comment(text)
 
-	-- retrieve current line number
-	local line = Nvim.get_curr_cursor()[1]
 
 	-- add the lines to the buffer
 	api.nvim_buf_set_lines(

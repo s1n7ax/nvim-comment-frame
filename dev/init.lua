@@ -25,9 +25,10 @@ local run_action = function ()
 
 		languages = {
 			lua = {
-				start_str = '--[[',
-				end_str = ']]--',
+				start_str = '--',
+				end_str = '--',
 				fill_char = '*',
+				auto_indent = false,
 			}
 		}
 	})

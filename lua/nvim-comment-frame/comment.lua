@@ -13,6 +13,7 @@ function Comment:new(opt)
 	self.fill_char = opt.fill_char
 	self.box_width = opt.box_width
 	self.line_wrap_len = opt.line_wrap_len
+	self.indent_str = opt.indent_str
 
 	self.COMMENT_LINE_FORMAT = '%%s%%%is%%s'
 	self.TEXT_LINE_FORMAT = '%%s%%%is%%s%%%is%%s'
@@ -28,6 +29,7 @@ function Comment:validate_config(opt)
 	Assert.String.is_str(opt.start_str, "start_str should be a string")
 	Assert.String.is_str(opt.end_str, "end_str should be a string")
 	Assert.String.is_str(opt.fill_char, "fill_char should be a single character string")
+	Assert.String.is_str(opt.indent_str, "indent_str should be a string")
 
 	Assert.String.is_not_empty(opt.start_str, "start_str shouldn't be empty")
 	Assert.String.is_not_empty(opt.end_str, "end_str shouldn't be empty")
@@ -71,7 +73,7 @@ function Comment:get_text_line(text)
 	local left_padding = math.floor(padding / 2)
 	local right_padding = padding - left_padding
 
-	return self.TEXT_LINE_FORMAT
+	local line = self.TEXT_LINE_FORMAT
 		:format(left_padding, right_padding)
 		:format(
 			self.start_str,
@@ -80,6 +82,7 @@ function Comment:get_text_line(text)
 			'',
 			self.end_str
 		)
+	return self.indent_str .. line
 end
 
 -- Returns border of the comment frame
@@ -93,7 +96,7 @@ function Comment:get_border_line()
 			self.end_str
 		):gsub(' ', self.fill_char)
 
-	return comment
+	return self.indent_str .. comment
 end
 
 return Comment

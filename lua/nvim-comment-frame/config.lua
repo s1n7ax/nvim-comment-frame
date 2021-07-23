@@ -4,6 +4,7 @@ local config = {
 	fill_char = '-',
 	box_width = 70,
 	line_wrap_len = 50,
+	auto_indent = true,
 
 	languages = {
 		bash = {
