@@ -6,7 +6,6 @@ local Treesitter = Util.Treesitter
 local Logger = Util.Logger
 local Nvim = Util.Nvim
 local Lua = Util.Lua
-
 local fn = vim.fn
 local api = vim.api
 
@@ -40,7 +39,6 @@ local function get_lang_config(lang, line)
 				:format(' ')
 		else
 			local indent_size = Indent.get_indent(line)
-			print(indent_size)
 
 			if indent_size > 0 then
 				local tabs = indent_size / shiftwidth
@@ -52,7 +50,6 @@ local function get_lang_config(lang, line)
 		end
 	end
 
-	print(vim.inspect(lc))
 
 	return lc
 end
