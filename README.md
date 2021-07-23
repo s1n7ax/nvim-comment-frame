@@ -2,33 +2,56 @@
 
 Basically when you give it some text it creates a comment frame like below.
 
-```javascript
-//------------------------------------------------------------------//
-//                        nvim-comment-frame                        //
-//------------------------------------------------------------------//
+```python
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~                   nvim-comment-frame                   ~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
 ## Features
 
 ### Detects the language using Treesitter
 
-`nvim-comment-frame` detects the current language using `treesitter` and changes
-the comment character based on the language.
+* Detects the current language using `treesitter` and changes
+the comment string based on the language.
+
+**Pythn**
+
+```python
+#----------------------------------------------------------#
+#           Python is an interpreted high-level            #
+#           general-purpose programming language           #
+#----------------------------------------------------------#
+with open("file.txt") as file_in:
+    lines = []
+    for line in file_in:
+        lines.append(line)
+```
 
 **Bash**
 
 ```bash
-#--------------------------------------------------------------------#
-#                            Hello World                             #
-#--------------------------------------------------------------------#
+#----------------------------------------------------------#
+#    Bash is a Unix shell and command language written     #
+#                       by Brian Fox                       #
+#----------------------------------------------------------#
+for i in $(seq 1 10);
+do
+    echo $i
+done
 ```
 
 **Lua**
 
 ```lua
-----------------------------------------------------------------------
---                           Hello World                            --
-----------------------------------------------------------------------
+--********************************************************--
+--    Lua is a lightweight, high-level, multi-paradigm    --
+--      programming language designed primarily for       --
+--              embedded use in applications              --
+--********************************************************--
+function String.trim(str)
+	return str:gsub('^%s+', ''):gsub('%s+$', '')
+end
 ```
 
 ### Wrap lines
@@ -43,6 +66,10 @@ the comment character based on the language.
 /*         a cornerstone technology of the World Wide Web,          */
 /*                  alongside HTML and JavaScript.                  */
 /*------------------------------------------------------------------*/
+body, h1 {
+    font-family: arial,sans-serif;
+    font-size: 14px;
+}
 ```
 
 ### Auto indent
@@ -60,9 +87,12 @@ detachstack(Client *c)
 
 	for (tc = &c->mon->stack; *tc && *tc != c; tc = &(*tc)->snext);
 	*tc = c->snext;
-	------------------------------------------------------------
-	--                      Hello World                       --
-	------------------------------------------------------------
+	//--------------------------------------------------------//
+	//      C is a general-purpose, procedural computer       //
+	//       programming language supporting structured       //
+	//        programming, lexical variable scope, and        //
+	//          recursion, with a static type system          //
+	//--------------------------------------------------------//
 
 	if (c == c->mon->sel) {
 		for (t = c->mon->stack; t && !ISVISIBLE(t); t = t->snext);
