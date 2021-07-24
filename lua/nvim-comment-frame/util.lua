@@ -1,5 +1,6 @@
 local api = vim.api
 local ts = vim.treesitter
+local fn = vim.fn
 
 local String = {}
 
@@ -88,6 +89,11 @@ function String.is_empty(str)
 	return false
 end
 
+function String.get_last_line(str)
+	local lines = vim.split(str, '[\r\n]')
+	return lines[#lines]
+end
+
 local Logger = {}
 
 -- Prints an error message
@@ -97,13 +103,59 @@ end
 
 local Nvim = {}
 
--- Returns the cursor line number
+-- Returns the cursor
 function Nvim.get_curr_cursor()
 	local win = api.nvim_get_current_win()
 	local cursor = api.nvim_win_get_cursor(win)
 
 	return cursor
 end
+
+-- Returns the line number the cursor is on
+function Nvim.get_curr_line_num()
+	return Nvim.get_curr_cursor()[1]
+end
+
+-- Prompt to get user input from the user
+function Nvim.get_user_input()
+	local text = fn.input('Enter the comment: ')
+
+	-- nvim input takes \n literally so this replaces all of them with actual
+	-- new line character and return the value
+	return text:gsub('\\n', '\n')
+end
+
+-- Promp to get multiline user input
+function Nvim.get_multiline_user_input()
+	local iteration = 0
+	local text = ''
+	local inputs = ''
+
+	while true do
+		-- Change the prompt from the second line
+		local prompt = ''
+
+		if iteration == 0 then
+			prompt = 'Enter the comment: '
+		else
+			prompt = '\n'
+		end
+
+		text = fn.input(prompt)
+
+		if String.is_empty(text) then
+			break
+		end
+
+		inputs = inputs .. text .. '\n'
+
+		iteration = iteration + 1
+	end
+
+	-- remove the last new line character and return the string
+	return inputs:gsub('[\r\n]$', '')
+end
+
 
 local Lua = {}
 

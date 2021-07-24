@@ -6,8 +6,10 @@ local Treesitter = Util.Treesitter
 local Logger = Util.Logger
 local Nvim = Util.Nvim
 local Lua = Util.Lua
+
 local fn = vim.fn
 local api = vim.api
+local o = vim.o
 
 -- Returns the language configuration for current treesitter language
 local function get_lang_config(lang, line)
@@ -29,7 +31,7 @@ local function get_lang_config(lang, line)
 		should_indent = config.auto_indent
 	end
 
-	local expandtab = vim.o.expandtab
+	local expandtab = o.expandtab
 	local shiftwidth = fn.shiftwidth()
 	local spaces_pattern = '%%%is'
 
@@ -51,14 +53,13 @@ local function get_lang_config(lang, line)
 		end
 	end
 
-
 	return lc
 end
 
 -- Detects the language and writes comment to the buffer
-local function add_comment()
+local function add_comment(opts)
 	-- retrieve current line number
-	local line = Nvim.get_curr_cursor()[1]
+	local line_num = Nvim.get_curr_line_num()
 
 	-- get the language of the current buffer from treesitter
 	local curr_lang = Treesitter.get_curr_lang()
@@ -71,14 +72,13 @@ local function add_comment()
 	end
 
 	-- get the comment frame configuration for current language
-	local lang_config = get_lang_config(curr_lang, line)
+	local lang_config = get_lang_config(curr_lang, line_num)
 
 	if lang_config == nil then
 		Logger.error("Could not find a configuration for language '" .. curr_lang .. "'")
 	end
 
-	-- get content from the user
-	local text = fn.input('What is the comment? ')
+	local text = Nvim.get_multiline_user_input()
 
 	if Util.String.is_empty(text) then
 		return
@@ -89,9 +89,10 @@ local function add_comment()
 		:new(lang_config)
 		:get_comment(text)
 
-	local comment_line = line
+	local comment_line = line_num
+
 	if lang_config.add_comment_above then
-		comment_line = line - 1
+		comment_line = line_num - 1
 	end
 
 	-- add the lines to the buffer
