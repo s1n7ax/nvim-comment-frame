@@ -153,7 +153,7 @@ require('nvim-comment-frame').setup({
 	disable_default_keymap = false,
 
 	-- adds custom keymap
-	keymap = '<leader>cc'
+	keymap = '<leader>cc',
 
 	-- width of the comment frame
 	frame_width = 70,
@@ -162,10 +162,10 @@ require('nvim-comment-frame').setup({
 	line_wrap_len = 50,
 
 	-- automatically indent the comment frame based on the line
-	auto_indent = true
+	auto_indent = true,
 
 	-- add comment above the current line
-	add_comment_above = true
+	add_comment_above = true,
 
 	-- configurations for individual language goes here
 	languages = {
@@ -198,10 +198,10 @@ require('nvim-comment-frame').setup({
 			line_wrap_len = 50,
 
 			-- automatically indent the comment frame based on the line
-			auto_indent = true
+			auto_indent = true,
 
 			-- add comment above the current line
-			add_comment_above = true
+			add_comment_above = true,
 		},
 	}
 })
