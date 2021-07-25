@@ -1,5 +1,9 @@
+local Indent = require('nvim-treesitter.indent')
+
 local api = vim.api
 local ts = vim.treesitter
+local fn = vim.fn
+local o = vim.o
 
 local String = {}
 
@@ -88,22 +92,128 @@ function String.is_empty(str)
 	return false
 end
 
+function String.get_last_line(str)
+	local lines = vim.split(str, '[\r\n]')
+	return lines[#lines]
+end
+
 local Logger = {}
 
 -- Prints an error message
 function Logger.error(message)
-	api.nvim_err_write("[nvim-comment-frame]:" .. message)
+	-- api.nvim_err_write("[nvim-comment-frame]:" .. message)
+	error("[nvim-comment-frame]: " .. message)
 end
 
 local Nvim = {}
 
--- Returns the cursor line number
+-- Returns the cursor
 function Nvim.get_curr_cursor()
 	local win = api.nvim_get_current_win()
 	local cursor = api.nvim_win_get_cursor(win)
 
 	return cursor
 end
+
+-- Returns the line number the cursor is on
+function Nvim.get_curr_line_num()
+	return Nvim.get_curr_cursor()[1]
+end
+
+-- Prompt to get user input from the user
+function Nvim.get_user_input()
+	local text = fn.input('Comment: ')
+
+	-- nvim input takes \n literally so this replaces all of them with actual
+	-- new line character and return the value
+	return text:gsub('\\n', '\n')
+end
+
+-- Promp to get multiline user input
+function Nvim.get_multiline_user_input()
+	local iteration = 0
+	local text = ''
+	local inputs = ''
+
+	while true do
+		-- Change the prompt from the second line
+		local prompt = ''
+
+		if iteration == 0 then
+			prompt = 'Comment (empty line to end): '
+		else
+			prompt = '\n'
+		end
+
+		text = fn.input(prompt)
+
+		if String.is_empty(text) then
+			break
+		end
+
+		inputs = inputs .. text .. '\n'
+
+		iteration = iteration + 1
+	end
+
+	-- remove the last new line character and return the string
+	return inputs:gsub('[\r\n]$', '')
+end
+
+--[[
+-- Inserts the given "lines" to "line_num"
+-- @param lines { table<string> } lines to add
+-- @param bufnr { number } buffer number the lines should be added
+-- @param line_num { number } line number where "lines" should be inserted
+-- @param insert_above { boolean } whether to add "lines" before the current
+-- line
+-- @returns { null }
+--]]
+function Nvim.set_lines(lines, bufnr, line_num, insert_above)
+	bufnr = bufnr or api.nvim_get_current_buf()
+
+	if insert_above then
+		line_num = line_num - 1
+	end
+
+	-- add the lines to the buffer
+	api.nvim_buf_set_lines(
+		bufnr,
+		line_num,
+		line_num,
+		false,
+		lines
+	)
+end
+
+--[[
+-- Returns the indentation string (spaces or tabs) of a given line
+-- This detects the current tab or space preferance from 'expandtab' option and
+-- change the indentation char accordingly
+-- @param line_num { number } line number whose indentation is required
+--]]
+function Nvim.get_indent_string(line_num)
+	local expandtab = o.expandtab
+	local shiftwidth = fn.shiftwidth()
+	local spaces_pattern = '%%%is'
+
+	if expandtab then
+		return spaces_pattern
+			:format(shiftwidth)
+			:format(' ')
+	else
+		local indent_size = Indent.get_indent(line_num)
+
+		if indent_size > 0 then
+			local tabs = indent_size / shiftwidth
+			return spaces_pattern
+				:format(tabs)
+				:format(' ')
+				:gsub(' ', '\t')
+		end
+	end
+end
+
 
 local Lua = {}
 
