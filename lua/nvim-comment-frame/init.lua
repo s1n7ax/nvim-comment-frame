@@ -1,6 +1,5 @@
 local config = require('nvim-comment-frame.config')
 local Comment = require('nvim-comment-frame.comment')
-local Indent = require('nvim-treesitter.indent')
 local Util = require('nvim-comment-frame.util')
 local Treesitter = Util.Treesitter
 local Logger = Util.Logger
@@ -9,11 +8,12 @@ local Lua = Util.Lua
 
 local fn = vim.fn
 local api = vim.api
-local o = vim.o
 
 -- Returns the language configuration for current treesitter language
-local function get_lang_config(lang, line)
+local function get_lang_config(lang, line_num)
 	local lc = config['languages'][lang]
+
+	if lc == nil then return nil end
 
 	-- set language fallback configuration
 	lc.start_str = lc.start_str or config.start_str
@@ -22,42 +22,18 @@ local function get_lang_config(lang, line)
 	lc.frame_width = lc.frame_width or config.frame_width
 	lc.line_wrap_len = lc.line_wrap_len or config.line_wrap_len
 	lc.add_comment_above = lc.add_comment_above or config.add_comment_above
-	lc.indent_str = ''
 
-	-- indentation configuration
-	local should_indent = lc.auto_indent
-
-	if should_indent == nil then
-		should_indent = config.auto_indent
-	end
-
-	local expandtab = o.expandtab
-	local shiftwidth = fn.shiftwidth()
-	local spaces_pattern = '%%%is'
-
-	if should_indent then
-		if expandtab then
-			lc.indent_str = spaces_pattern
-				:format(shiftwidth)
-				:format(' ')
-		else
-			local indent_size = Indent.get_indent(line)
-
-			if indent_size > 0 then
-				local tabs = indent_size / shiftwidth
-				lc.indent_str = spaces_pattern
-					:format(tabs)
-					:format(' ')
-					:gsub(' ', '\t')
-			end
-		end
-	end
+	lc.indent_str = (
+		(lc.auto_indent == nil and config.auto_indent) or (lc.auto_indent)
+	) and Nvim.get_indent_string(line_num) or ''
 
 	return lc
 end
 
--- Detects the language and writes comment to the buffer
-local function add_comment(opts)
+--[[
+-- Returns the comment object based on the line in the current buffer
+--]]
+local function get_comment()
 	-- retrieve current line number
 	local line_num = Nvim.get_curr_line_num()
 
@@ -72,49 +48,75 @@ local function add_comment(opts)
 	end
 
 	-- get the comment frame configuration for current language
-	local lang_config = get_lang_config(curr_lang, line_num)
+	local lconf = get_lang_config(curr_lang, line_num)
 
-	if lang_config == nil then
-		Logger.error("Could not find a configuration for language '" .. curr_lang .. "'")
+	if lconf == nil then
+		Logger.error('configuration not found for language: ' .. curr_lang)
 	end
 
-	local text = Nvim.get_multiline_user_input()
+	-- generate the comment
+	return Comment:new(lconf)
+end
 
+local function add_comment_common(text, comment, opts)
 	if Util.String.is_empty(text) then
 		return
 	end
 
-	-- generate the comment
-	local comment = Comment
-		:new(lang_config)
-		:get_comment(text)
+	local bufnr = api.nvim_get_current_buf()
+	local line_num = Nvim.get_curr_line_num()
 
-	local comment_line = line_num
-
-	if lang_config.add_comment_above then
-		comment_line = line_num - 1
-	end
-
-	-- add the lines to the buffer
-	api.nvim_buf_set_lines(
-		api.nvim_get_current_buf(),
-		comment_line,
-		comment_line,
-		false,
-		comment
+	Nvim.set_lines(
+		comment:get_comment(text),
+		bufnr,
+		line_num,
+		opts.add_comment_above or config.add_comment_above
 	)
 end
 
--- Merge the default configuration with the user configuration
+--[[
+-- Adds a comment frame to the buffer
+-- This takes SINGLE line user input and insers a comment to the buffer
+--]]
+local function add_comment(opts)
+	opts = opts or {}
+	local comment = opts.comment or get_comment()
+	add_comment_common(Nvim.get_user_input(), comment, opts)
+end
+
+--[[
+-- Adds a comment frame to the buffer
+-- This takes MULTILINE user input and insers a comment to the buffer
+--]]
+local function add_multiline_comment(opts)
+	opts = opts or {}
+	local comment = opts.comment or get_comment()
+	add_comment_common(Nvim.get_multiline_user_input(), comment, opts)
+end
+
+--[[
+-- Setup the plugin configuration
+--]]
 local function setup (opt)
 	config = Lua.merge_tables(config, opt or {})
 
 	if not config.disable_default_keymap then
 		local keymap = config.keymap or '<leader>cf'
+		local multiline_keymap = config.multiline_keymap or '<leader>cm'
+
+		-- Single line input keybind
 		api.nvim_set_keymap(
 			'n',
 			keymap,
 			":lua require('nvim-comment-frame').add_comment()<CR>",
+			{ silent = true }
+		)
+
+		-- Multiline input keybind
+		api.nvim_set_keymap(
+			'n',
+			multiline_keymap,
+			":lua require('nvim-comment-frame').add_multiline_comment()<CR>",
 			{ silent = true }
 		)
 	end
@@ -124,4 +126,5 @@ end
 return {
 	setup = setup,
 	add_comment = add_comment,
+	add_multiline_comment = add_multiline_comment ,
 }

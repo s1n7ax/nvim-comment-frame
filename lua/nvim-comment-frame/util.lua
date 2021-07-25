@@ -1,6 +1,9 @@
+local Indent = require('nvim-treesitter.indent')
+
 local api = vim.api
 local ts = vim.treesitter
 local fn = vim.fn
+local o = vim.o
 
 local String = {}
 
@@ -98,7 +101,8 @@ local Logger = {}
 
 -- Prints an error message
 function Logger.error(message)
-	api.nvim_err_write("[nvim-comment-frame]:" .. message)
+	-- api.nvim_err_write("[nvim-comment-frame]:" .. message)
+	error("[nvim-comment-frame]: " .. message)
 end
 
 local Nvim = {}
@@ -154,6 +158,60 @@ function Nvim.get_multiline_user_input()
 
 	-- remove the last new line character and return the string
 	return inputs:gsub('[\r\n]$', '')
+end
+
+--[[
+-- Inserts the given "lines" to "line_num"
+-- @param lines { table<string> } lines to add
+-- @param bufnr { number } buffer number the lines should be added
+-- @param line_num { number } line number where "lines" should be inserted
+-- @param insert_above { boolean } whether to add "lines" before the current
+-- line
+-- @returns { null }
+--]]
+function Nvim.set_lines(lines, bufnr, line_num, insert_above)
+	bufnr = bufnr or api.nvim_get_current_buf()
+
+	if insert_above then
+		line_num = line_num - 1
+	end
+
+	-- add the lines to the buffer
+	api.nvim_buf_set_lines(
+		bufnr,
+		line_num,
+		line_num,
+		false,
+		lines
+	)
+end
+
+--[[
+-- Returns the indentation string (spaces or tabs) of a given line
+-- This detects the current tab or space preferance from 'expandtab' option and
+-- change the indentation char accordingly
+-- @param line_num { number } line number whose indentation is required
+--]]
+function Nvim.get_indent_string(line_num)
+	local expandtab = o.expandtab
+	local shiftwidth = fn.shiftwidth()
+	local spaces_pattern = '%%%is'
+
+	if expandtab then
+		return spaces_pattern
+			:format(shiftwidth)
+			:format(' ')
+	else
+		local indent_size = Indent.get_indent(line_num)
+
+		if indent_size > 0 then
+			local tabs = indent_size / shiftwidth
+			return spaces_pattern
+				:format(tabs)
+				:format(' ')
+				:gsub(' ', '\t')
+		end
+	end
 end
 
 
