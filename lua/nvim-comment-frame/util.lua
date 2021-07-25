@@ -122,7 +122,7 @@ end
 
 -- Prompt to get user input from the user
 function Nvim.get_user_input()
-	local text = fn.input('Enter the comment: ')
+	local text = fn.input('Comment: ')
 
 	-- nvim input takes \n literally so this replaces all of them with actual
 	-- new line character and return the value
@@ -140,7 +140,7 @@ function Nvim.get_multiline_user_input()
 		local prompt = ''
 
 		if iteration == 0 then
-			prompt = 'Enter the comment: '
+			prompt = 'Comment (empty line to end): '
 		else
 			prompt = '\n'
 		end
