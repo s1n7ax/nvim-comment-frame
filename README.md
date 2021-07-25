@@ -198,7 +198,7 @@ require('nvim-comment-frame').setup({
     languages = {
         -- configuration for Lua programming language
         -- @NOTE global configuration will be overridden by language level
-        configuration if provided
+        -- configuration if provided
         lua = {
             -- start the comment with this string
             start_str = '--[[',
