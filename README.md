@@ -112,14 +112,40 @@ detachstack(Client *c)
 
 ## Keymaps
 
+Following are the default keymaps.
+
 - `<leader>cf` - Single line comment
 - `<leader>cm` - Multiline comment
 
-Functions to map to any key. :smile:
-```vim
-:lua require('nvim-comment-frame').add_comment()<CR>
+To add a custom keymaps, pass `keymap` and `multiline_keymap` to `setup()`
 
-:lua require('nvim-comment-frame').add_multiline_comment()<CR>
+```lua
+require('nvim-comment-frame').setup({
+    keymap = '<leader>cc',
+    multiline_keymap = '<leader>C',
+})
+```
+
+Add keymaps manually
+
+**Lua**
+
+```lua
+vim.api.nvim_set_keymap('n', '<leader>cc', ":lua require('nvim-comment-frame').add_comment()<CR>", {})
+--                           ^^^^^^^^^^^ change this to what ever you want
+
+vim.api.nvim_set_keymap('n', '<leader>C', ":lua require('nvim-comment-frame').add_multiline_comment()<CR>", {})
+--                           ^^^^^^^^^^^ change this to what ever you want
+```
+
+**Vimscript**
+
+```vim
+nmap <leader>cc :lua require('nvim-comment-frame').add_comment()<CR>
+#   ^^^^^^^^^^^ change this to what ever you want
+
+nmap <leader>C :lua require('nvim-comment-frame').add_multiline_comment()<CR>
+#   ^^^^^^^^^^^ change this to what ever you want
 ```
 
 ## Install
