@@ -115,6 +115,13 @@ detachstack(Client *c)
 - `<leader>cf` - Single line comment
 - `<leader>cm` - Multiline comment
 
+Functions to map to any key. :smile:
+```vim
+:lua require('nvim-comment-frame').add_comment()<CR>
+
+:lua require('nvim-comment-frame').add_multiline_comment()<CR>
+```
+
 ## Install
 
 **Packer**
