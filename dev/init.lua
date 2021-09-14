@@ -30,25 +30,25 @@ local run_action = function ()
 				start_str = '--',
 				end_str = '--',
 				fill_char = '*',
-				auto_indent = false,
+				auto_indent = true,
 			}
 		}
 	})
 
-	local comment = Comment:new({
-		start_str = '~~',
-		end_str = '~~',
-		fill_char = '*',
-		frame_width = 50,
-		line_wrap_len = 40,
-		indent_str = '',
-	})
+	--  local comment = Comment:new({
+		--  start_str = '~~',
+		--  end_str = '~~',
+		--  fill_char = '*',
+		--  frame_width = 50,
+		--  line_wrap_len = 40,
+		--  indent_str = '',
+	--  })
 
-	-- require(package_name).add_comment()
+	require(package_name).add_comment()
 
-	require(package_name).add_comment({
-		comment = comment
-	})
+	--  require(package_name).add_comment({
+		--  comment = comment
+	--  })
 end
 
 -- unload and run the function from the package
