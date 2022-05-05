@@ -249,7 +249,7 @@ function Treesitter.get_lang_stack_for_position(cursor, buffer)
         end
 
         if v.tbl_count(tree:children()) > 0 then
-            local child_iter = get_list_iter(tree:childret())
+            local child_iter = get_list_iter(tree:children())
 
             deep_lang_search(child_iter)
         end
