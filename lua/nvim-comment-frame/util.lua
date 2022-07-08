@@ -1,14 +1,14 @@
-local Indent = require('nvim-treesitter.indent')
+-- local Indent = require('nvim-treesitter.indent')
 
+---@diagnostic disable-next-line: undefined-global
 local v = vim
 local api = v.api
 local ts = v.treesitter
 local fn = v.fn
-local o = v.o
 
 local String = {}
 
--- Returns an array of strings splitted by given pattern
+-- Returns an array of strings split by given pattern
 function String.split(str, pattern)
     local lines = {}
 
@@ -22,7 +22,7 @@ function String.trim(str) return str:gsub('^%s+', ''):gsub('%s+$', '') end
 function String.wrap_lines(str, wrap_len)
     str = String.trim(str)
 
-    -- if the rtring is empty, end the function
+    -- if the string is empty, end the function
     if str:len() <= 0 then return nil end
 
     local function find_break_point()
@@ -50,7 +50,7 @@ function String.wrap_lines(str, wrap_len)
             local space_index, _ = str:find('%s', index)
 
             -- if current space index and newline index are beyond the wrap
-            -- length, brea
+            -- length, break
             if (space_index == nil or (space_index - 1) > wrap_len) then
                 break
             end
@@ -71,8 +71,8 @@ function String.wrap_lines(str, wrap_len)
     local lines = { str:sub(1, break_point) }
 
     for _, line in ipairs(
-                       String.wrap_lines(str:sub(break_point + 1), wrap_len) or
-                           {}) do table.insert(lines, line) end
+        String.wrap_lines(str:sub(break_point + 1), wrap_len) or
+        {}) do table.insert(lines, line) end
 
     return lines
 end
@@ -84,6 +84,7 @@ function String.is_empty(str)
 end
 
 function String.get_last_line(str)
+---@diagnostic disable-next-line: undefined-global
     local lines = vim.split(str, '[\r\n]')
     return lines[#lines]
 end
@@ -118,7 +119,7 @@ function Nvim.get_user_input()
     return text:gsub('\\n', '\n')
 end
 
--- Promp to get multiline user input
+-- Prompt to get multi-line user input
 function Nvim.get_multiline_user_input()
     local iteration = 0
     local text = ''
@@ -167,7 +168,7 @@ end
 
 --[[
 -- Returns the indentation string (spaces or tabs) of a given line
--- This detects the current tab or space preferance from 'expandtab' option and
+-- This detects the current tab or space preference from 'expandtab' option and
 -- change the indentation char accordingly
 -- @param line_num { number } line number whose indentation is required
 --]]
@@ -204,71 +205,28 @@ function Treesitter.get_curr_lang()
 end
 
 function Treesitter.get_lang_stack_for_position(cursor, buffer)
-    local parser = ts.get_parser(buffer)
-    local root = parser:trees()[1]:root()
-    -- cursor starts at 1
-    local line_no = cursor[1] - 1
-    local lang_stack = {}
+    local range = { cursor[1], cursor[2], cursor[1], cursor[2] }
+    local root_parser = ts.get_parser(buffer)
+    local lang_trees_tmp = {}
+    local lang_trees = {}
+    local lang_tree_scope = {}
 
-    -- add lang to final starck that will be returned
-    local add_lang = function(lang) table.insert(lang_stack, lang) end
+    root_parser:for_each_child(function(tree, _)
+        table.insert(lang_trees_tmp, tree)
+    end, true)
 
-    -- get iterator from a given list
-    local get_list_iter = function(list)
-        if not v.tbl_islist(list) then list = v.tbl_values(list) end
-
-        local index = 1
-        return {
-            next = function()
-                local temp_index = index
-                index = index + 1
-                return list[temp_index]
-            end,
-        }
+    for i = #lang_trees_tmp, 1, -1 do
+        local lang_tree = lang_trees_tmp[i]
+        table.insert(lang_trees, lang_tree)
     end
 
-    -- if the root of the tree is out of range of the cursor, exit
-    if not (root:start() <= line_no and root:end_() >= line_no) then
-        return nil
-    end
-
-    add_lang(parser:lang())
-
-    -- recursivly search
-    local function deep_lang_search(iter)
-        local tree = iter.next()
-
-        if not tree then return end
-
-        for _, region in ipairs(tree:included_regions()) do
-            region = region[1]
-
-            if (region:start() <= line_no and region:end_() >= line_no) then
-                add_lang(tree:lang())
-            end
+    for _, lang_tree in ipairs(lang_trees) do
+        if lang_tree:contains(range) then
+            table.insert(lang_tree_scope, lang_tree:lang())
         end
-
-        if v.tbl_count(tree:children()) > 0 then
-            local child_iter = get_list_iter(tree:children())
-
-            deep_lang_search(child_iter)
-        end
-
-        deep_lang_search(iter)
     end
 
-    local children = parser:children()
-    local child_iter = get_list_iter(children)
-
-    deep_lang_search(child_iter)
-
-    -- invert the list
-    local inverted_lang_stack = {}
-    for i = v.tbl_count(lang_stack), 1, -1 do
-        table.insert(inverted_lang_stack, lang_stack[i])
-    end
-
-    return inverted_lang_stack
+    return lang_tree_scope
 end
 
 function Treesitter.get_curr_lang_stack_for_position()
