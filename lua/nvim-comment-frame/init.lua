@@ -7,9 +7,7 @@ local Nvim = Util.Nvim
 local Lua = Util.Lua
 
 local v = vim
-local fn = v.fn
 local api = v.api
-local ts = v.treesitter
 
 -- Returns the language configuration for current treesitter language
 local function get_lang_config(lang_stack)

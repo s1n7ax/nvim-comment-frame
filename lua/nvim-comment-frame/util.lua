@@ -1,9 +1,8 @@
--- local Indent = require('nvim-treesitter.indent')
+local parsers = require('nvim-treesitter.parsers')
 
 ---@diagnostic disable-next-line: undefined-global
 local v = vim
 local api = v.api
-local ts = v.treesitter
 local fn = v.fn
 
 local String = {}
@@ -198,7 +197,7 @@ local Treesitter = {}
 
 -- Returns the language for current line using treesitter
 function Treesitter.get_curr_lang()
-    local parser = ts.get_parser(api.nvim_get_current_buf())
+    local parser = parsers.get_parser(api.nvim_get_current_buf())
     local line = Nvim.get_curr_cursor()[1]
 
     return parser:language_for_range({ line, 0, line, 0 }):lang()
@@ -206,7 +205,7 @@ end
 
 function Treesitter.get_lang_stack_for_position(cursor, buffer)
     local range = { cursor[1], cursor[2], cursor[1], cursor[2] }
-    local root_parser = ts.get_parser(buffer)
+    local root_parser = parsers.get_parser(buffer)
     local lang_trees_tmp = {}
     local lang_trees = {}
     local lang_tree_scope = {}
