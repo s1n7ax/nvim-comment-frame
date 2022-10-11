@@ -47,7 +47,7 @@ local function get_comment()
     -- treesitter level before this function
     -- need to find out why and how to show a meaningful error message
     if lang_stack == nil then
-        Logger.error('Treesitter cannot figure out the language')
+        Logger.error('Treesitter cannot figure out the language.\nPlease install a language parser.\n ex:- :TSInstall rust')
     end
 
     -- get the comment frame configuration for current language

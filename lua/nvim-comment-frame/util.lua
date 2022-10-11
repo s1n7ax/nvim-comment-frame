@@ -206,6 +206,11 @@ end
 function Treesitter.get_lang_stack_for_position(cursor, buffer)
     local range = { cursor[1], cursor[2], cursor[1], cursor[2] }
     local root_parser = parsers.get_parser(buffer)
+
+    if not root_parser then
+        return
+    end
+
     local lang_trees_tmp = {}
     local lang_trees = {}
     local lang_tree_scope = {}
