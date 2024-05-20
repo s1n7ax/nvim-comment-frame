@@ -211,20 +211,17 @@ function Treesitter.get_lang_stack_for_position(cursor, buffer)
         return
     end
 
-    local lang_trees_tmp = {}
     local lang_trees = {}
     local lang_tree_scope = {}
 
-    root_parser:for_each_child(function(tree, _)
-        table.insert(lang_trees_tmp, tree)
-    end, true)
+    table.insert(lang_tree_scope, Treesitter.get_curr_lang())
 
-    for i = #lang_trees_tmp, 1, -1 do
-        local lang_tree = lang_trees_tmp[i]
-        table.insert(lang_trees, lang_tree)
+    for _, tree in pairs(root_parser:children()) do
+        table.insert(lang_trees, tree)
     end
 
-    for _, lang_tree in ipairs(lang_trees) do
+    for i = #lang_trees, 1, -1 do
+        local lang_tree = lang_trees[i]
         if lang_tree:contains(range) then
             table.insert(lang_tree_scope, lang_tree:lang())
         end
